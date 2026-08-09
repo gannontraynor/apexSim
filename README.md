@@ -1,4 +1,4 @@
-# F1 Race Intelligence
+# Apex Sim
 
 An engineering-focused platform for exploring Formula 1 race data through interactive analytics, visualization, and strategy intelligence.
 
