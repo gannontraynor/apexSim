@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastf1>=3.8.3",
+    "matplotlib>=3.10.8",
     "pandas>=2.3.3",
     "pyarrow>=25.0.0",
     "unicode>=2.9",

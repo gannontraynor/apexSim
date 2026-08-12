@@ -423,6 +423,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastf1" },
+    { name = "matplotlib" },
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "unicode" },
@@ -439,6 +440,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastf1", specifier = ">=3.8.3" },
+    { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pyarrow", specifier = ">=25.0.0" },
     { name = "unicode", specifier = ">=2.9" },

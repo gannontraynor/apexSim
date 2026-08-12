@@ -128,24 +128,12 @@ def normalize_laps(laps: pd.DataFrame) -> pd.DataFrame:
     normalized["position"] = normalized["Position"].astype("Int64")
     normalized["tyre_life"] = normalized["TyreLife"].astype("Float64")
 
-    normalized["lap_time_ms"] = duration_to_milliseconds(
-        normalized["LapTime"]
-    )
-    normalized["sector_1_ms"] = duration_to_milliseconds(
-        normalized["Sector1Time"]
-    )
-    normalized["sector_2_ms"] = duration_to_milliseconds(
-        normalized["Sector2Time"]
-    )
-    normalized["sector_3_ms"] = duration_to_milliseconds(
-        normalized["Sector3Time"]
-    )
-    normalized["pit_in_ms"] = duration_to_milliseconds(
-        normalized["PitInTime"]
-    )
-    normalized["pit_out_ms"] = duration_to_milliseconds(
-        normalized["PitOutTime"]
-    )
+    normalized["lap_time_ms"] = duration_to_milliseconds(normalized["LapTime"])
+    normalized["sector_1_ms"] = duration_to_milliseconds(normalized["Sector1Time"])
+    normalized["sector_2_ms"] = duration_to_milliseconds(normalized["Sector2Time"])
+    normalized["sector_3_ms"] = duration_to_milliseconds(normalized["Sector3Time"])
+    normalized["pit_in_ms"] = duration_to_milliseconds(normalized["PitInTime"])
+    normalized["pit_out_ms"] = duration_to_milliseconds(normalized["PitOutTime"])
 
     normalized = normalized.rename(
         columns={
@@ -190,9 +178,7 @@ def normalize_laps(laps: pd.DataFrame) -> pd.DataFrame:
 def build_stints(laps: pd.DataFrame) -> pd.DataFrame:
     """Aggregate normalized lap records into driver stints."""
 
-    valid_stints = laps.dropna(
-        subset=["driver_code", "stint", "lap_number"]
-    ).copy()
+    valid_stints = laps.dropna(subset=["driver_code", "stint", "lap_number"]).copy()
 
     stints = (
         valid_stints.groupby(
@@ -211,9 +197,7 @@ def build_stints(laps: pd.DataFrame) -> pd.DataFrame:
         .sort_values(["driver_code", "stint"], ignore_index=True)
     )
 
-    stints["median_lap_time_ms"] = (
-        stints["median_lap_time_ms"].round().astype("Int64")
-    )
+    stints["median_lap_time_ms"] = stints["median_lap_time_ms"].round().astype("Int64")
 
     return stints
 
@@ -353,11 +337,7 @@ def main() -> int:
     arguments = parse_arguments()
 
     event: str | int
-    event = (
-        int(arguments.event)
-        if arguments.event.isdigit()
-        else arguments.event
-    )
+    event = int(arguments.event) if arguments.event.isdigit() else arguments.event
 
     try:
         summary = ingest_session(
