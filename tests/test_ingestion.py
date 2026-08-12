@@ -9,6 +9,7 @@ from pipelines.ingestion.load_session import (
     normalize_laps,
     slugify,
 )
+from pipelines.ingestion.export_lap_telemetry import normalize_telemetry
 
 
 def test_slugify() -> None:
@@ -95,3 +96,31 @@ def test_build_stints() -> None:
     assert first_stint["end_lap"] == 2
     assert first_stint["lap_count"] == 2
     assert first_stint["median_lap_time_ms"] == 89500
+
+
+def test_normalize_telemetry_converts_to_canonical_units() -> None:
+    raw = pd.DataFrame(
+        {
+            "Time": pd.to_timedelta([1.0, 1.5, 2.0], unit="s"),
+            "Distance": [0.0, 25.0, 50.0],
+            "Speed": [180.0, 198.0, 216.0],
+            "Throttle": [50.0, 75.0, 100.0],
+            "Brake": [True, False, False],
+            "nGear": [3, 4, 5],
+            "RPM": [9000.0, 10000.0, 11000.0],
+            "DRS": [8, 10, 12],
+        }
+    )
+
+    result = normalize_telemetry(raw)
+
+    assert result["time_s"].tolist() == [0.0, 0.5, 1.0]
+    assert result["speed_mps"].tolist() == [50.0, 55.0, 60.0]
+    assert result["throttle"].tolist() == [0.5, 0.75, 1.0]
+    assert result["brake"].tolist() == [1.0, 0.0, 0.0]
+    assert result["drs"].tolist() == [False, True, True]
+
+
+def test_normalize_telemetry_rejects_missing_columns() -> None:
+    with pytest.raises(ValueError, match="Telemetry is missing columns"):
+        normalize_telemetry(pd.DataFrame({"Distance": [0.0, 1.0]}))
